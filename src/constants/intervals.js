@@ -1,0 +1,3 @@
+export const INTERVALS_DAILY = 'DAILY'
+export const INTERVALS_MONTHLY = 'MONTHLY'
+export const INTERVALS_YEARLY = 'YEARLY'

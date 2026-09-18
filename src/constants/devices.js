@@ -1,0 +1,2 @@
+export const DEVICES_TYPE_WITH_MODEL = 'WITH_MODEL'
+export const DEVICES_TYPE_NO_MODEL = 'NO_MODEL'

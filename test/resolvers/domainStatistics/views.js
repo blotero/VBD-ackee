@@ -1,0 +1,183 @@
+import test from 'ava'
+import listen from 'test-listen'
+
+import server from '../../../src/server.js'
+import { cleanup, cleanupDatabase, connectToDatabase, fillDatabase } from '../_utils.js'
+import { getStats } from './_utils.js'
+
+const base = listen(server)
+
+test.before(connectToDatabase)
+test.after.always(cleanup(server))
+test.beforeEach(fillDatabase)
+test.afterEach.always(cleanupDatabase)
+
+const macro = async (t, variables, assertions) => {
+  const limit = variables.limit == null ? '' : `, limit: ${variables.limit}`
+
+  const statistics = await getStats({
+    base,
+    token: t.context.token.id,
+    domainId: t.context.domain.id,
+    fragment: `
+			views(interval: ${variables.interval}, type: ${variables.type}${limit}) {
+				value
+				count
+			}
+		`,
+  })
+
+  assertions(t, statistics.views)
+}
+
+macro.title = (providedTitle, options) => `fetch ${Object.values(options).join(' and ')} views`
+
+test(
+  macro,
+  {
+    interval: 'DAILY',
+    type: 'UNIQUE',
+  },
+  (t, views) => {
+    t.is(views.length, 14)
+    t.is(views[0].count, 1)
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'DAILY',
+    type: 'UNIQUE',
+    limit: 1,
+  },
+  (t, views) => {
+    t.is(views.length, 1)
+    t.is(views[0].count, 1)
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'MONTHLY',
+    type: 'UNIQUE',
+  },
+  (t, views) => {
+    t.is(views.length, 14)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'MONTHLY',
+    type: 'UNIQUE',
+    limit: 1,
+  },
+  (t, views) => {
+    t.is(views.length, 1)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'YEARLY',
+    type: 'UNIQUE',
+  },
+  (t, views) => {
+    t.is(views.length, 14)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'YEARLY',
+    type: 'UNIQUE',
+    limit: 1,
+  },
+  (t, views) => {
+    t.is(views.length, 1)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'DAILY',
+    type: 'TOTAL',
+  },
+  (t, views) => {
+    t.is(views.length, 14)
+    t.is(views[0].count, 1)
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'DAILY',
+    type: 'TOTAL',
+    limit: 1,
+  },
+  (t, views) => {
+    t.is(views.length, 1)
+    t.is(views[0].count, 1)
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'MONTHLY',
+    type: 'TOTAL',
+  },
+  (t, views) => {
+    t.is(views.length, 14)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'MONTHLY',
+    type: 'TOTAL',
+    limit: 1,
+  },
+  (t, views) => {
+    t.is(views.length, 1)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'YEARLY',
+    type: 'TOTAL',
+  },
+  (t, views) => {
+    t.is(views.length, 14)
+    t.is(typeof views[0].count, 'number')
+  },
+)
+
+test(
+  macro,
+  {
+    interval: 'YEARLY',
+    type: 'TOTAL',
+    limit: 1,
+  },
+  (t, views) => {
+    t.is(views.length, 1)
+    t.is(typeof views[0].count, 'number')
+  },
+)

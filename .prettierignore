@@ -1,0 +1,8 @@
+# Test artifacts
+.nyc_output
+
+# Build output
+dist
+
+# Vercel
+.vercel

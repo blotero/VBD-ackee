@@ -1,0 +1,4 @@
+export const RANGES_LAST_24_HOURS = 'LAST_24_HOURS'
+export const RANGES_LAST_7_DAYS = 'LAST_7_DAYS'
+export const RANGES_LAST_30_DAYS = 'LAST_30_DAYS'
+export const RANGES_LAST_6_MONTHS = 'LAST_6_MONTHS'

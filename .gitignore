@@ -1,0 +1,30 @@
+# Temporary files
+**/.DS_Store
+**/.AppleDouble
+**/.LSOverride
+**/.idea/
+# External disk files
+**/.Spotlight-V100
+**/.Trashes
+
+# Package Managers
+npm-debug.log
+node_modules
+
+# Test artifacts
+coverage
+.nyc_output
+
+# User data
+/data
+.env
+
+# Build output
+dist/*
+!dist/favicon.ico
+!dist/index.css
+!dist/index.js
+!dist/tracker.js
+
+# Vercel
+.vercel
