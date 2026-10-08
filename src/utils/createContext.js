@@ -5,24 +5,6 @@ import createDate from './createDate.js'
 import { isSet } from './ignoreCookie.js'
 import isAuthenticated from './isAuthenticated.js'
 
-const authentications = new Map()
-
-const authenticate = async (authorization) => {
-  const validUntil = authentications.get(authorization)
-
-  if (validUntil != null && validUntil > Date.now()) {
-    return true
-  }
-
-  const result = await isAuthenticated(authorization, config.ttl)
-
-  if (result === true) {
-    authentications.set(authorization, Date.now() + Number(config.ttl))
-  }
-
-  return result
-}
-
 export const createServerlessContext = (request) => {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip')
   const headers = Object.fromEntries(request.headers)
@@ -36,7 +18,7 @@ export const createExpressContext = ({ req }) => {
 const createContext = async (ip, headers) => {
   return {
     isDemoMode: config.isDemoMode,
-    isAuthenticated: await authenticate(headers['authorization']),
+    isAuthenticated: await isAuthenticated(headers['authorization'], config.ttl),
     isIgnored: isSet(headers['cookie']),
     dateDetails: createDate(headers['time-zone']),
     userAgent: headers['user-agent'],
