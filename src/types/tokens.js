@@ -47,6 +47,10 @@ export default gql`
     Indicates that the token deletion was successful. Might be 'null' otherwise.
     """
     success: Boolean
+    """
+    The deleted token.
+    """
+    payload: Token
   }
 
   type Mutation {
