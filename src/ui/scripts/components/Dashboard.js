@@ -48,6 +48,10 @@ const Dashboard = (props) => {
   const currentRoute = useRoute(props.route)
   const domains = useDomains()
 
+  const signOut = () => {
+    props.reset()
+  }
+
   useHotkey('o', () => props.setRoute('/'))
   useHotkey('v', () => props.setRoute('/insights/views'))
   useHotkey('p', () => props.setRoute('/insights/pages'))
@@ -55,6 +59,7 @@ const Dashboard = (props) => {
   useHotkey('d', () => props.setRoute('/insights/durations'))
   useHotkey('e', () => props.setRoute('/insights/events'))
   useHotkey('s', () => props.setRoute('/settings'))
+  useHotkey('q', signOut)
   useHotkey('0,1,2,3,4,5,6,7,8,9', (event, { key }) => gotoDomainWhenDefined(domains.value, props.setRoute, key), {}, [
     domains.value,
   ])
