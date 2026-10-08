@@ -3,17 +3,25 @@ import * as tokens from '../database/tokens.js'
 import KnownError from './KnownError.js'
 import isExpired from './isExpired.js'
 
-export default async (authorization, ttl) => {
-  // Token not in request
+const readToken = (headers) => {
+  const authorization = headers['authorization']
+
+  // Scripts and integrations may send the token without a scheme
   if (authorization == null) {
-    return new KnownError('Token missing')
+    return headers['x-ackee-token']
   }
 
   const key = authorization.split(' ')[0]
   const token = authorization.split(' ')[1]
 
-  // Token not in header
-  if (key !== 'Bearer' || token == null) {
+  return key === 'Bearer' ? token : undefined
+}
+
+export default async (headers, ttl) => {
+  const token = readToken(headers)
+
+  // Token not in request
+  if (token == null || token === '') {
     return new KnownError('Token missing')
   }
 

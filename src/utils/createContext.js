@@ -18,7 +18,7 @@ export const createExpressContext = ({ req }) => {
 const createContext = async (ip, headers) => {
   return {
     isDemoMode: config.isDemoMode,
-    isAuthenticated: await isAuthenticated(headers['authorization'], config.ttl),
+    isAuthenticated: await isAuthenticated(headers, config.ttl),
     isIgnored: isSet(headers['cookie']),
     dateDetails: createDate(headers['time-zone']),
     userAgent: headers['user-agent'],
