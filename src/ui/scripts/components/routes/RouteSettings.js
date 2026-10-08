@@ -31,12 +31,15 @@ const RouteSettings = (props) => {
   const events = useEvents()
   const permanentTokens = usePermanentTokens()
 
+  const signOutFailed = deleteToken.error != null
+
   const onSignOut = async () => {
-    await deleteToken.mutate({
+    const { data } = await deleteToken.mutate({
       variables: {
         id: props.token,
       },
     })
+    if (data?.deleteToken?.success !== true) return
     props.reset()
   }
 
@@ -87,7 +90,8 @@ const RouteSettings = (props) => {
       },
       h(LinkItem, { type: 'p', disabled: true, text: version }, 'Version'),
       h(Line),
-      h(LinkItem, { type: 'button', onClick: onSignOut }, 'Sign Out'),
+      h(LinkItem, { type: 'button', disabled: deleteToken.loading === true, onClick: onSignOut }, 'Sign Out'),
+      signOutFailed === true && h(Message, { status: 'error' }, deleteToken.error.message),
     ),
 
     h(
