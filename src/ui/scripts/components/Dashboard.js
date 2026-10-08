@@ -1,6 +1,7 @@
 import { createElement as h } from 'react'
 
 import useDomains from '../api/hooks/domains/useDomains.js'
+import useDeleteToken from '../api/hooks/tokens/useDeleteToken.js'
 import * as routes from '../constants/routes.js'
 import useHotkey from '../hooks/useHotkey.js'
 import useRoute from '../hooks/useRoute.js'
@@ -47,8 +48,14 @@ const gotoDomainWhenDefined = (domains, setRoute, index) => {
 const Dashboard = (props) => {
   const currentRoute = useRoute(props.route)
   const domains = useDomains()
+  const deleteToken = useDeleteToken()
 
-  const signOut = () => {
+  const signOut = async () => {
+    await deleteToken.mutate({
+      variables: {
+        id: props.token,
+      },
+    })
     props.reset()
   }
 
@@ -59,7 +66,7 @@ const Dashboard = (props) => {
   useHotkey('d', () => props.setRoute('/insights/durations'))
   useHotkey('e', () => props.setRoute('/insights/events'))
   useHotkey('s', () => props.setRoute('/settings'))
-  useHotkey('q', signOut)
+  useHotkey('q', signOut, {}, [props.token])
   useHotkey('0,1,2,3,4,5,6,7,8,9', (event, { key }) => gotoDomainWhenDefined(domains.value, props.setRoute, key), {}, [
     domains.value,
   ])
