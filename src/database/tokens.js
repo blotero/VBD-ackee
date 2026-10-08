@@ -44,8 +44,14 @@ export const update = async (id) => {
   )
 }
 
-export const del = (id) => {
-  return Token.findOneAndDelete({
-    id,
-  })
+export const del = async (id) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
+
+  return enhance(
+    await Token.findOneAndDelete({
+      id,
+    }),
+  )
 }
