@@ -31,7 +31,11 @@ export default {
       }
     },
     deleteToken: async (parent, { id }, { setCookies }) => {
-      await tokens.del(id)
+      const entry = await tokens.get(id)
+
+      if (entry == null) throw new KnownError('Token invalid')
+
+      await tokens.del(entry.id)
 
       // Remove cookie to report your own visits, again
       setCookies.push(ignoreCookieOff)
