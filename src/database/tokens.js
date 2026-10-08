@@ -1,4 +1,5 @@
 import Token from '../models/Token.js'
+import isExpired from '../utils/isExpired.js'
 
 const response = (entry) => ({
   id: entry.id,
@@ -42,6 +43,21 @@ export const update = async (id) => {
       },
     ),
   )
+}
+
+export const findActive = async (id, ttl) => {
+  const entry = await Token.findOne({ id })
+
+  // Token not in database
+  if (entry == null) return null
+
+  // Remove tokens that haven't been used for too long
+  if (isExpired(entry.updated, ttl) === true) {
+    await Token.findOneAndDelete({ id })
+    return null
+  }
+
+  return update(id)
 }
 
 export const del = (id) => {

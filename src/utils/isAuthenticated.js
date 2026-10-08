@@ -1,7 +1,6 @@
 import * as permanentTokens from '../database/permanentTokens.js'
 import * as tokens from '../database/tokens.js'
 import KnownError from './KnownError.js'
-import isExpired from './isExpired.js'
 
 export default async (authorization, ttl) => {
   // Token not in request
@@ -17,21 +16,10 @@ export default async (authorization, ttl) => {
     return new KnownError('Token missing')
   }
 
-  const tokenEntry = await tokens.get(token)
+  const tokenEntry = await tokens.findActive(token, ttl)
   const permanentTokenEntry = await permanentTokens.get(token)
 
   if (tokenEntry != null) {
-    // Tokens can expire
-    const valid = isExpired(tokenEntry.updated, ttl) === false
-
-    // Token too old
-    if (valid === false) {
-      return new KnownError('Token invalid')
-    }
-
-    // Update token to ensure that the token stays valid
-    await tokens.update(token)
-
     return true
   }
 
