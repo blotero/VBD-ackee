@@ -31,7 +31,7 @@ export default {
       }
     },
     deleteToken: async (parent, { id }, { setCookies }) => {
-      const entry = await tokens.get(id)
+      const entry = await tokens.del(id)
 
       if (entry == null) throw new KnownError('Unknown token')
 
