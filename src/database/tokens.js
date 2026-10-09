@@ -51,7 +51,7 @@ export const del = async (token) => {
 
   return enhance(
     await Token.findOneAndDelete({
-      token,
+      id: token,
     }),
   )
 }
