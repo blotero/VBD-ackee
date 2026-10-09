@@ -2,6 +2,7 @@ import { ApolloProvider } from '@apollo/client/react'
 import { createElement as h, useCallback, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import { MUTATION as DELETE_TOKEN } from './api/hooks/tokens/useDeleteToken.js'
 import createAuthLink from './api/links/createAuthLink.js'
 import createHttpLink from './api/links/createHttpLink.js'
 import createStatusLink from './api/links/createStatusLink.js'
@@ -51,6 +52,16 @@ const App = () => {
     setKey(Date.now())
   }, [token.resetToken, modals.resetModals, filters.resetFilters, client.resetStore, setKey])
 
+  const signOut = useCallback(async () => {
+    await client.mutate({
+      mutation: DELETE_TOKEN,
+      variables: {
+        id: token.token,
+      },
+    })
+    reset()
+  }, [token.token, reset])
+
   useCustomScrollbar()
   useScrollReset(router.route)
 
@@ -63,6 +74,7 @@ const App = () => {
       h(Main, {
         key,
         reset,
+        signOut,
         useErrors,
         loading,
         ...router,

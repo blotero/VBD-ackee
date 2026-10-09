@@ -5,7 +5,6 @@ import { homepage, version } from '../../../../../package.json'
 import useDomains from '../../api/hooks/domains/useDomains.js'
 import useEvents from '../../api/hooks/events/useEvents.js'
 import usePermanentTokens from '../../api/hooks/permanentTokens/usePermanentTokens.js'
-import useDeleteToken from '../../api/hooks/tokens/useDeleteToken.js'
 import {
   MODALS_DOMAIN_ADD,
   MODALS_DOMAIN_EDIT,
@@ -25,19 +24,15 @@ const LoadingMessage = (props) => {
 }
 
 const RouteSettings = (props) => {
-  const deleteToken = useDeleteToken()
-
   const domains = useDomains()
   const events = useEvents()
   const permanentTokens = usePermanentTokens()
 
-  const onSignOut = async () => {
-    await deleteToken.mutate({
-      variables: {
-        id: props.token,
-      },
+  const onSignOut = () => {
+    props.setRoute('/')
+    props.signOut().catch((error) => {
+      console.warn(error)
     })
-    props.reset()
   }
 
   const createItems = (items, editFn, createFn, createLabel) => [
@@ -161,8 +156,8 @@ const RouteSettings = (props) => {
 }
 
 RouteSettings.propTypes = {
-  reset: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
+  signOut: PropTypes.func.isRequired,
+  setRoute: PropTypes.func.isRequired,
   addModal: PropTypes.func.isRequired,
 }
 

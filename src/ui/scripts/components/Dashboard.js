@@ -106,6 +106,7 @@ const Dashboard = (props) => {
       { className: 'content' },
       h(routeComponents[currentRoute.key], {
         reset: props.reset,
+        signOut: props.signOut,
         route: props.route,
         setRoute: props.setRoute,
         token: props.token,

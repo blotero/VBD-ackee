@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
 
-const MUTATION = gql`
+export const MUTATION = gql`
   mutation deleteToken($id: ID!) {
     deleteToken(id: $id) {
       success
