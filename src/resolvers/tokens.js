@@ -1,7 +1,9 @@
 import * as tokens from '../database/tokens.js'
+import requireAuth from '../middlewares/requireAuth.js'
 import config from '../utils/config.js'
 import { off as ignoreCookieOff, on as ignoreCookieOn } from '../utils/ignoreCookie.js'
 import KnownError from '../utils/KnownError.js'
+import pipe from '../utils/pipe.js'
 
 const response = (entry) => ({
   id: entry.id,
@@ -10,6 +12,11 @@ const response = (entry) => ({
 })
 
 export default {
+  Query: {
+    sessions: pipe(requireAuth, () => {
+      return tokens.sessions()
+    }),
+  },
   Mutation: {
     createToken: async (parent, { input }, { setCookies }) => {
       const { username, password } = input
@@ -40,5 +47,16 @@ export default {
         success: true,
       }
     },
+    deleteSession: pipe(requireAuth, async (parent, { id }) => {
+      const entry = await tokens.delSession(id)
+
+      if (entry == null) {
+        throw new KnownError('Unknown session')
+      }
+
+      return {
+        success: true,
+      }
+    }),
   },
 }

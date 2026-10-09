@@ -44,6 +44,21 @@ export const update = async (id) => {
   )
 }
 
+export const sessions = async () => {
+  const enhance = (entries) => {
+    return entries.map((entry) => ({
+      id: entry._id.toString(),
+      updated: entry.updated,
+    }))
+  }
+
+  return enhance(await Token.find({}).sort({ updated: -1 }))
+}
+
+export const delSession = (id) => {
+  return Token.findByIdAndDelete(id)
+}
+
 export const del = (id) => {
   return Token.findOneAndDelete({
     id,

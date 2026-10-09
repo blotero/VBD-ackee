@@ -16,6 +16,17 @@ export default gql`
     updated: DateTime!
   }
 
+  type Session {
+    """
+    Session identifier.
+    """
+    id: ID!
+    """
+    Identifies the date and time when the session was last used.
+    """
+    updated: DateTime!
+  }
+
   input CreateTokenInput {
     """
     Username used to protect the Ackee instance.
@@ -49,6 +60,13 @@ export default gql`
     success: Boolean
   }
 
+  type Query {
+    """
+    Data of all sessions.
+    """
+    sessions: [Session!]
+  }
+
   type Mutation {
     """
     Create a new token. The token is required in order to access protected data.
@@ -58,5 +76,9 @@ export default gql`
     Delete an existing token. The token than can't be used anymore for authentication.
     """
     deleteToken(id: ID!): DeleteTokenPayload!
+    """
+    End an existing session.
+    """
+    deleteSession(id: ID!): DeleteTokenPayload!
   }
 `
